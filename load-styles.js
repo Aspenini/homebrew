@@ -5,7 +5,7 @@
     if (main) main.disabled = true;
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'wiiu.css';
+    link.href = '/wiiu.css';
     document.head.appendChild(link);
     document.documentElement.className = 'wiiu';
     var vp = document.querySelector('meta[name="viewport"]');
