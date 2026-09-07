@@ -2,6 +2,8 @@
 	import {
 		doomsdayTitles,
 		entryIds,
+		entryRuntime,
+		formatDuration,
 		kindLabels,
 		mcuIds,
 		mcuSagas,
@@ -40,6 +42,22 @@
 		doom
 			? doomsdayTitles.filter((item) => entryIds(item).every((id) => watched[id])).length
 			: mcuIds.reduce((n, id) => n + (watched[id] ? 1 : 0), 0)
+	);
+	const watchedMinutes = $derived(
+		doom
+			? doomsdayTitles.reduce(
+					(n, item) => n + (entryIds(item).every((id) => watched[id]) ? entryRuntime(item) : 0),
+					0
+				)
+			: mcuTitles.reduce((n, item) => n + (watched[item.id] ? (item.runtime ?? 0) : 0), 0)
+	);
+	const remainingMinutes = $derived(
+		doom
+			? doomsdayTitles.reduce(
+					(n, item) => n + (entryIds(item).every((id) => watched[id]) ? 0 : entryRuntime(item)),
+					0
+				)
+			: mcuTitles.reduce((n, item) => n + (watched[item.id] ? 0 : (item.runtime ?? 0)), 0)
 	);
 
 	function persist() {
@@ -197,7 +215,10 @@
 	</header>
 
 	<div class="progress-row" aria-live="polite">
-		<span>{done} / {total} watched</span>
+		<div class="progress-stats">
+			<span>{done} / {total} watched</span>
+			<span>{formatDuration(watchedMinutes)} watched · {formatDuration(remainingMinutes)} left</span>
+		</div>
 		<button type="button" onclick={clearProgress} disabled={done === 0}>Clear</button>
 	</div>
 
@@ -262,7 +283,7 @@
 />
 
 {#snippet watchRow(
-	item: { title: string; year: string; kind: TitleKind; altUniverse?: boolean },
+	item: { title: string; year: string; kind: TitleKind; runtime?: number; altUniverse?: boolean },
 	n: number,
 	ids: string[]
 )}
@@ -278,6 +299,16 @@
 				{item.title}{#if item.altUniverse}<abbr class="watch-alt" title="Alternate universe">*</abbr>{/if}
 			</span>
 			<span class="watch-kind">{kindLabels[item.kind]}</span>
+			{#if item.runtime}
+				<span
+					class="watch-runtime"
+					title={item.kind === 'movie' ? 'Theatrical runtime' : 'Total runtime'}
+				>
+					{formatDuration(item.runtime)}
+				</span>
+			{:else}
+				<span class="watch-runtime" title="Runtime not announced yet">—</span>
+			{/if}
 			<span class="watch-year">{item.year}</span>
 		</label>
 	</li>

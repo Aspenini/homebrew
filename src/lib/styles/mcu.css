@@ -154,10 +154,25 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
+	justify-content: space-between;
 	gap: 0.6rem 1rem;
 	margin: 0 0 1.25rem;
 	color: var(--fg-muted);
 	font-size: 0.92rem;
+}
+
+.progress-stats {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.35rem 1rem;
+}
+
+.progress-stats span:last-child {
+	font-family: var(--font-mono);
+	font-size: 0.82rem;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0.02em;
 }
 
 .progress-row button {
@@ -308,12 +323,19 @@
 }
 
 .watch-kind,
+.watch-runtime,
 .watch-year {
 	flex: 0 0 auto;
 	font-family: var(--font-mono);
 	font-size: 0.72rem;
 	color: var(--fg-muted);
 	white-space: nowrap;
+}
+
+.watch-runtime {
+	font-variant-numeric: tabular-nums;
+	min-width: 4.5rem;
+	text-align: right;
 }
 
 .watch-kind {
@@ -381,8 +403,12 @@
 	}
 
 	.page[data-theme='mcu'] .progress-row {
-		justify-content: space-between;
 		margin-bottom: 0.8rem;
+	}
+
+	.page[data-theme='mcu'] .progress-stats {
+		flex-direction: column;
+		gap: 0.2rem;
 	}
 
 	.page[data-theme='mcu'] .progress-row button {
@@ -397,10 +423,10 @@
 	.watch-item label,
 	.doom-list .watch-item label {
 		display: grid;
-		grid-template-columns: 1.25rem 1.5rem minmax(0, 1fr) auto;
+		grid-template-columns: 1.25rem 1.5rem minmax(0, 1fr) auto auto;
 		grid-template-areas:
-			'check num title title'
-			'. . kind year';
+			'check num title title title'
+			'. . kind runtime year';
 		gap: 0.25rem 0.55rem;
 		min-height: 3.75rem;
 		padding: 0.7rem 0.5rem;
@@ -437,6 +463,13 @@
 		margin: 0;
 	}
 
+	.watch-runtime {
+		grid-area: runtime;
+		margin: 0;
+		min-width: 0;
+		text-align: right;
+	}
+
 	.watch-year {
 		grid-area: year;
 		margin: 0;
@@ -444,6 +477,7 @@
 	}
 
 	.watch-kind,
+	.watch-runtime,
 	.watch-year {
 		align-self: center;
 		font-size: 0.68rem;
@@ -643,6 +677,7 @@
 	}
 
 	.page[data-mode='doomsday'] .doom-list .watch-kind,
+	.page[data-mode='doomsday'] .doom-list .watch-runtime,
 	.page[data-mode='doomsday'] .doom-list .watch-year {
 		font-size: 0.66rem;
 	}
